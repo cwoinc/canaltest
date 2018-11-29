@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,20 +20,16 @@ public class HBaseUtil {
     
     private static volatile Connection conn = null;
     
-    private static Set<String> hbaseNamespaces = Sets.newHashSet();
+    private static final Set<String> HBASE_NAMESPACES = Sets.newHashSet();
     
     public static void main(String[] args) {
         initHBaseConnection();
-        //createNamespace("wantdo");
-        //createNamespace("tgzz");
-        //reNameTable("dkasfhg", "king:test.lightning_deals_item");
         
         try (Admin admin = conn.getAdmin()) {
             NamespaceDescriptor[] namespaceDescriptors = admin.listNamespaceDescriptors();
             for (NamespaceDescriptor namespaceDescriptor : namespaceDescriptors) {
                 System.out.println(namespaceDescriptor);
             }
-            //conn.getAdmin().
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -53,14 +50,23 @@ public class HBaseUtil {
         }
         
         try (Admin admin = conn.getAdmin()) {
-            hbaseNamespaces = Sets.newHashSet();
             NamespaceDescriptor[] namespaceDescriptors = admin.listNamespaceDescriptors();
             for (NamespaceDescriptor namespaceDescriptor : namespaceDescriptors) {
-                hbaseNamespaces.add(namespaceDescriptor.getName());
+                HBASE_NAMESPACES.add(namespaceDescriptor.getName());
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (null != conn) {
+                try {
+                    conn.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
     }
     
     /**
@@ -223,11 +229,11 @@ public class HBaseUtil {
     public static void createNamespace(String namespace) {
         checkValues(namespace);
         try (Admin admin = conn.getAdmin()) {
-            if (hbaseNamespaces.contains(namespace)) {
+            if (HBASE_NAMESPACES.contains(namespace)) {
                 return;
             }
             admin.createNamespace(NamespaceDescriptor.create(namespace).build());
-            hbaseNamespaces.add(namespace);
+            HBASE_NAMESPACES.add(namespace);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -241,7 +247,7 @@ public class HBaseUtil {
     public static void dropNamespace(String namespace) {
         checkValues(namespace);
         try (Admin admin = conn.getAdmin()) {
-            if (!hbaseNamespaces.contains(namespace)) {
+            if (!HBASE_NAMESPACES.contains(namespace)) {
                 throw new RuntimeException(namespace + "该命名空间不存在");
             }
             TableName[] tableNames = admin.listTableNamesByNamespace(namespace);
@@ -250,7 +256,7 @@ public class HBaseUtil {
                 admin.deleteTable(tableName);
             }
             admin.deleteNamespace(namespace);
-            hbaseNamespaces.remove(namespace);
+            HBASE_NAMESPACES.remove(namespace);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -92,14 +92,14 @@ public class ClientUtils {
      * 发送数据到kafka
      */
     private static void sendToKafka(String kafkaTopic, CanalEntry.Header header, CanalEntry.EventType operateType, List<CanalEntry.Column> columns) {
-        //Map<String, Object> columnValueMap = getUpdateAfterData(columns);
         Map<String, String> columnValueMap = Maps.newHashMap();
-        columns.forEach(column -> columnValueMap.put(column.getName(), column.getValue()));
+        if (null != columns) {
+            columns.forEach(column -> columnValueMap.put(column.getName(), column.getValue()));
+        }
         HBaseEntity entity = new HBaseEntity();
         entity.setOperateType(operateType);
         entity.setTableName(header.getTableName());
         entity.setDatabaseName(header.getSchemaName());
-        entity.setRowKey(String.valueOf(columnValueMap.get("id")));
         entity.setColumnValueMap(columnValueMap);
         entity.setNameSpace(HBASE_NAMESPACE);
         

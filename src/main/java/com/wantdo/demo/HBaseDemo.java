@@ -31,6 +31,9 @@ public class HBaseDemo {
         
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
         kafkaConsumer.subscribe(Collections.singletonList(ClientUtils.KAFKA_TOPIC));
+        
+        initHBaseConnection();
+        
         while (true) {
             ConsumerRecords<String, String> records = kafkaConsumer.poll(3);
             for (ConsumerRecord<String, String> record : records) {
@@ -42,7 +45,6 @@ public class HBaseDemo {
     }
     
     private static void exeHBaseOperate(HBaseEntity entity) {
-        initHBaseConnection();
         String tableName = entity.getHbaseTableName();
         createNamespace(entity.getNameSpace());
         createTable(tableName, entity.getFamily());

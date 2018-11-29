@@ -5,6 +5,7 @@ import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author king
@@ -13,7 +14,15 @@ import java.util.Map;
 @Data
 public class HBaseEntity {
     
+    /**
+     * 默认的列族
+     */
     private static final String DEFAULT_FAMILY = "i";
+    
+    /**
+     * 默认的数据库主键名称
+     */
+    private static final String DEFAULT_KEY_NAME = "id";
     
     /**
      * hbase表名
@@ -31,9 +40,9 @@ public class HBaseEntity {
     private String databaseName;
     
     /**
-     * hbase表的行标识
+     * mysql表的主键名称
      */
-    private String rowKey;
+    private String keyName = DEFAULT_KEY_NAME;
     
     /**
      * hbase表的列族
@@ -66,5 +75,19 @@ public class HBaseEntity {
             throw new RuntimeException("表名不能为空");
         }
         return nameSpace + ":" + databaseName + "." + tableName;
+    }
+    
+    /**
+     * 获取HBase里的rowKey
+     *
+     * @return rowKey
+     */
+    public String getRowKey() {
+        Optional.ofNullable(columnValueMap).orElseThrow(() -> new RuntimeException("列名及其数据不能为空"));
+        String rowKey = columnValueMap.get(keyName);
+        if (StringUtils.isBlank(rowKey)) {
+            throw new RuntimeException("rowKey不能为空");
+        }
+        return rowKey;
     }
 }
