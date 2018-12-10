@@ -33,6 +33,7 @@ public class HBaseUtil {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        createTable("wantdo:az_mws.fe_charge_component","i");
     }
     
     public static synchronized void initHBaseConnection() {

@@ -1,7 +1,5 @@
 package com.wantdo.demo;
 
-import com.wantdo.demo.util.ClientUtils;
-import com.wantdo.demo.util.JsonMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -21,7 +19,7 @@ public class HBaseDemo {
     public static void main(String[] args) {
         Properties properties = new Properties();
         properties.put("bootstrap.servers", "192.168.125.222:9092");
-        properties.put("group.id", "group-1");
+        properties.put("group.id", "group-21");
         properties.put("enable.auto.commit", "true");
         properties.put("auto.commit.interval.ms", "1000");
         properties.put("auto.offset.reset", "earliest");
@@ -30,15 +28,16 @@ public class HBaseDemo {
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
-        kafkaConsumer.subscribe(Collections.singletonList(ClientUtils.KAFKA_TOPIC));
+        kafkaConsumer.subscribe(Collections.singletonList("tgzz"));
         
         initHBaseConnection();
         
         while (true) {
             ConsumerRecords<String, String> records = kafkaConsumer.poll(3);
             for (ConsumerRecord<String, String> record : records) {
-                HBaseEntity entity = (HBaseEntity) JsonMapper.fromJsonString(record.value(), HBaseEntity.class);
-                exeHBaseOperate(entity);
+                System.out.println(record);
+                //HBaseEntity entity = (HBaseEntity) JsonMapper.fromJsonString(record.value(), HBaseEntity.class);
+                //exeHBaseOperate(entity);
             }
         }
         

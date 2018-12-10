@@ -21,7 +21,7 @@ import java.util.Properties;
  */
 public class ClientUtils {
     
-    public static final String KAFKA_TOPIC, HBASE_NAMESPACE, INSTANCE_NAME = KAFKA_TOPIC = HBASE_NAMESPACE = "king";
+    public static final String KAFKA_TOPIC, HBASE_NAMESPACE, INSTANCE_NAME = KAFKA_TOPIC = HBASE_NAMESPACE = "tgzz";
     
     private static volatile Producer<String, String> producer = null;
     
