@@ -13,7 +13,7 @@ public class ProducerDemo {
     
     public static void main(String[] args) {
         Properties properties = new Properties();
-        properties.put("bootstrap.servers", "192.168.125.222:9092");
+        properties.put("bootstrap.servers", "192.168.125.210:9092,192.168.125.211:9092,192.168.125.212:9092");
         properties.put("acks", "all");
         properties.put("retries", 0);
         properties.put("batch.size", 16384);
@@ -24,7 +24,7 @@ public class ProducerDemo {
         try (Producer<String, String> producer = new KafkaProducer<>(properties)) {
             for (int i = 0; i < 100; i++) {
                 String msg = "Message " + i;
-                producer.send(new ProducerRecord<>("kafka_topic", msg));
+                producer.send(new ProducerRecord<>("test1", msg));
                 System.out.println("Sent:" + msg);
             }
         } catch (Exception e) {

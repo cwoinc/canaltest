@@ -33,7 +33,9 @@ public class HBaseUtil {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        createTable("wantdo:az_mws.fe_charge_component","i");
+        String tableName = "wantdo:az_mws.fe_charge_component";
+        //createTable(tableName,"i");
+        getValue(tableName);
     }
     
     public static synchronized void initHBaseConnection() {

@@ -15,7 +15,7 @@ public class HBaseConnectionUtil {
     
     public static final String BASE_PATH = "/home/king/diy/shared_folders/";
     
-    public static final String INPUT_PATH = BASE_PATH + "fe_safe_reimbursement.tsv";
+    public static final String INPUT_PATH = BASE_PATH + "output.tsv";
     
     public static final String OUTPUT_PATH = BASE_PATH + String.valueOf(System.currentTimeMillis());
     

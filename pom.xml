@@ -21,7 +21,7 @@
     </build>
 
     <properties>
-        <jackson.version>2.2.3</jackson.version>
+        <jackson.version>2.9.6</jackson.version>
     </properties>
 
 

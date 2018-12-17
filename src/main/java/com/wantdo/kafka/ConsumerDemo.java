@@ -24,12 +24,11 @@ public class ConsumerDemo {
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
-        kafkaConsumer.subscribe(Arrays.asList("test"));
+        kafkaConsumer.subscribe(Arrays.asList("maxwell_test"));
         while (true) {
             ConsumerRecords<String, String> records = kafkaConsumer.poll(3);
             for (ConsumerRecord<String, String> record : records) {
-                System.out.printf("offset = %d, value = %s", record.offset(), record.value());
-                System.out.println();
+                System.out.println(record.topic());
             }
         }
         
